@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff6e40</color>
+    <color name="colorPrimaryDark">#d94c20</color>
+    <color name="colorAccent">#177e89</color>
+    <color name="listViewToolbarColor">#FF6E40</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparentWhite">#A6FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#000000</color>
+    <color name="list_view_example_selection_action_mode_background">#FF5D4037</color>
+    <color name="selectionColor">#20000000</color>
+    <color name="colorSub">#b0afaf</color>
+    <color name="colorTex">#585858</color>
+    <color name="colordevider">#64dad8d8</color>
+    <color name="colorblue">#4c71f5</color>
+</resources>
