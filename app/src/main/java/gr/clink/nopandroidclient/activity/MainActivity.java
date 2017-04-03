@@ -90,7 +90,7 @@ public class  MainActivity extends AppCompatActivity {
 
     public void navViewClicked(){
         if(!UserInformation.getInstance().isAuthenticated()) {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginRegisterActivity.class);
             startActivity(intent);
         }else{
             //TODO: USER PROFILE

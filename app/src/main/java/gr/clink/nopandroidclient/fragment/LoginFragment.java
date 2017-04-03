@@ -1,4 +1,4 @@
-package gr.clink.nopandroidclient.activity;
+package gr.clink.nopandroidclient.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,14 +6,14 @@ import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,29 +29,26 @@ import gr.clink.nopandroidclient.model.UserInformation;
 import gr.clink.nopandroidclient.other.Globals;
 import gr.clink.nopandroidclient.other.JSONParser;
 
-/**
- * A login screen that offers login via email/password.
- */
-public class LoginActivity extends AppCompatActivity{
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+public class LoginFragment extends Fragment {
+
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
+
+        mEmailView = (EditText) rootView.findViewById(R.id.email);
+
+        mPasswordView = (EditText) rootView.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -63,17 +60,24 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mEmailView.setText("admin@yourstore.com");
+        mPasswordView.setText("admin");
+
+        Button mEmailSignInButton = (Button) rootView.findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = rootView.findViewById(R.id.login_form);
+        mProgressView = rootView.findViewById(R.id.login_progress);
+
+
+        return rootView;
     }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -137,6 +141,7 @@ public class LoginActivity extends AppCompatActivity{
         return password.length() > 1;
     }
 
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -172,6 +177,7 @@ public class LoginActivity extends AppCompatActivity{
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
 
 
     /**
@@ -226,13 +232,13 @@ public class LoginActivity extends AppCompatActivity{
                     loginResult = UserInformation.CustomerLoginResults.typeFromInt(responseCode);
                     JSONObject result = json.getJSONObject(RESULT);
                     if (loginResult == UserInformation.CustomerLoginResults.Successful) {
-                        Toast.makeText(LoginActivity.this, loginResult.toString(),
+                        Toast.makeText(getActivity(), loginResult.toString(),
                                 Toast.LENGTH_LONG).show();
                         UserInformation.getInstance().setCustomerFrom(result.getJSONObject(CUSTOMER));
-                        finish();
+                        getActivity().finish();
                     } else {
                         String message = result.getString(MESSAGE);
-                        Toast.makeText(LoginActivity.this, message,
+                        Toast.makeText(getActivity(), message,
                                 Toast.LENGTH_LONG).show();
                         mPasswordView.setError(message);
                         mPasswordView.requestFocus();
@@ -243,12 +249,12 @@ public class LoginActivity extends AppCompatActivity{
 
 
                 } catch (JSONException e) {
-                    Toast.makeText(LoginActivity.this, R.string.login_no_internet_connection,
+                    Toast.makeText(getActivity(), R.string.login_no_internet_connection,
                             Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }else{
-                Toast.makeText(LoginActivity.this, R.string.login_no_internet_connection,
+                Toast.makeText(getActivity(), R.string.login_no_internet_connection,
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -259,5 +265,5 @@ public class LoginActivity extends AppCompatActivity{
             showProgress(false);
         }
     }
-}
 
+}

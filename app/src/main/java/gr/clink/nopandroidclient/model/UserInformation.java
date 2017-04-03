@@ -2,8 +2,12 @@ package gr.clink.nopandroidclient.model;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import gr.clink.nopandroidclient.R;
 
@@ -68,13 +72,21 @@ public class UserInformation {
 
     private String userName;
     private String name;
+    private String guid;
+    private List<Integer> roles;
+    private List<Address> addresses;
 
+    public String getGuid() {
+        return guid;
+    }
+    public void setRoles(List<Integer> roles) {
+        this.roles = roles;
+    }
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getName() {
@@ -98,7 +110,9 @@ public class UserInformation {
     private static class CustomerConstants{
         static String EMAIL = "Email";
         static String FULLNAME = "FullName";
-        static String SHIPPINGADDRESS = "ShippingAddress"; //jsonobject
+        static String GUID = "GUID";
+        static String ROLES = "Roles";
+        static String ADDRESSES = "Addresses"; //jsonobject
         private static class AddressInfo{
             static String RECIPIENTNAME = "FullRecipientName";
             static String CITY = "City";
@@ -116,7 +130,30 @@ public class UserInformation {
     public void setCustomerFrom(JSONObject json) throws JSONException{
         userName = json.getString(CustomerConstants.EMAIL);
         name = json.getString(CustomerConstants.FULLNAME);
-
+        guid = json.getString(CustomerConstants.GUID);
+        JSONArray _addresses = json.getJSONArray(CustomerConstants.ADDRESSES);
+        List<Address> addressList = new ArrayList<>();
+        for (int i = 0; i< _addresses.length();i++){
+            JSONObject address = _addresses.getJSONObject(i);
+            addressList.add(new Address(address.getString(CustomerConstants.AddressInfo.RECIPIENTNAME),
+                    address.getString(CustomerConstants.AddressInfo.CITY),
+                    address.getString(CustomerConstants.AddressInfo.ADDRESS1),
+                    address.getString(CustomerConstants.AddressInfo.ADDRESS2),
+                    address.getString(CustomerConstants.AddressInfo.COMPANY),
+                    address.getString(CustomerConstants.AddressInfo.ZIP),
+                    address.getString(CustomerConstants.AddressInfo.PHONENUMBER),
+                    address.getString(CustomerConstants.AddressInfo.FAX),
+                    address.getString(CustomerConstants.AddressInfo.COUNTRY),
+                    address.getString(CustomerConstants.AddressInfo.PROVINCE)
+            ));
+        }
+        addresses = addressList;
+        JSONArray _roles = json.getJSONArray(CustomerConstants.ROLES);
+        List<Integer> roleList = new ArrayList<>();
+        for (int i = 0; i< _roles.length();i++){
+            roleList.add(_roles.getInt(i));
+        }
+        roles = roleList;
     }
 
     public void logOut(){

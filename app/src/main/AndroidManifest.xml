@@ -46,13 +46,10 @@
 
         <activity
             android:name=".activity.ProductDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login"/>
-
+            android:name=".activity.LoginRegisterActivity"
+            android:label="@string/title_activity_login_register"></activity>
     </application>
-
-
 
 </manifest>
