@@ -65,6 +65,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
     }
 
     private void setListOfProducts(JSONArray arr) throws JSONException {
+
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject product = arr.getJSONObject(i);
                 String name = product.getString("Name");
@@ -74,10 +75,12 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
                 Integer stockQuantity = product.getInt("StockQuantity");
                 Float price = (float) product.getDouble("Price");
                 JSONArray pictureArray = product.getJSONArray("PictureURLs");
-                List<String> pictureURLs = new ArrayList<>();
+                ArrayList<String> pictureURLs = new ArrayList<>();
                 for (int j = 0;j < pictureArray.length(); j++) {
                     pictureURLs.add(pictureArray.getString(j));
+
                 }
+
                 productList.add(new Product(name,categoryName,id,shortDescription,fullDescription,stockQuantity,price,pictureURLs));
             }
 
@@ -116,6 +119,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
         intent.putExtra(Globals.ProductDetails.PRODUCT_CATEGORY, product.getCategoryName());
         intent.putExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION, product.getFullDescription());
         intent.putExtra(Globals.ProductDetails.PRODUCT_PRICE, product.getProductPrice());
+        intent.putExtra(Globals.ProductDetails.PRODUCT_IMAGES, product.getPictureURLS());
 
         startActivity(intent);
     }

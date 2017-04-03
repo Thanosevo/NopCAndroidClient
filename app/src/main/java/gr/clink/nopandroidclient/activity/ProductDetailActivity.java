@@ -15,6 +15,8 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 
 import org.fabiomsr.moneytextview.MoneyTextView;
 
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.fragment.ChildAnimationExample;
@@ -28,11 +30,12 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
     private String productFullDescription;
     private String productName;
     private String productCategory;
+    private ArrayList<String> productImages;
 
     //    Typeface fonts1,fonts2;
     LinearLayout linear1,linear2, linear3, linear4, linear5, linear6;
 
-    TextView discription3, discription2, discription1, productCategoryTextView, productNameTextView, productFullDescriptionTextView;
+    TextView discription3, productAttributes, productFullDescriptionTextView, productCategoryTextView, productNameTextView;
     MoneyTextView productPriceTextView;
 
     @Override
@@ -46,6 +49,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         productPrice = intent.getFloatExtra(Globals.ProductDetails.PRODUCT_PRICE, 0.0f);
         productFullDescription = intent.getStringExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION);
         productCategory = intent.getStringExtra(Globals.ProductDetails.PRODUCT_CATEGORY);
+        productImages = intent.getStringArrayListExtra(Globals.ProductDetails.PRODUCT_IMAGES);
         // Set Category TextView
         productCategoryTextView  = (TextView)findViewById(R.id.productCategory);
         productCategoryTextView.setText(productCategory);
@@ -55,17 +59,17 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         // Set Product Price TextView
         productPriceTextView = (MoneyTextView)findViewById(R.id.price);
         productPriceTextView.setAmount(productPrice);
-        // Set Product Description
-        //productFullDescriptionTextView = (TextView)findViewById(R.id.discription);
-        //productFullDescriptionTextView.setText(productFullDescription);
 
 
-//                ***********discription**********
+        //System.out.println(productImages.size() + "<<<<<<<------------------------");
+
+//                ***********description**********
 
         linear1 = (LinearLayout)findViewById(R.id.linear1);
         linear2 = (LinearLayout)findViewById(R.id.linear2);
-        discription1 = (TextView)findViewById(R.id.discription1);
-
+        productFullDescriptionTextView = (TextView)findViewById(R.id.discription1);
+        // Set Product Description
+        productFullDescriptionTextView.setText(productFullDescription);
 
         linear1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +77,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear2.setVisibility(View.VISIBLE);
                 linear1.setVisibility(View.GONE);
-                discription1.setVisibility(View.VISIBLE);
+                productFullDescriptionTextView.setVisibility(View.VISIBLE);
 
             }
         });
@@ -85,7 +89,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear2.setVisibility(View.GONE);
                 linear1.setVisibility(View.VISIBLE);
-                discription1.setVisibility(View.GONE);
+                productFullDescriptionTextView.setVisibility(View.GONE);
 
 
             }
@@ -93,11 +97,11 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
 
 
-//                ***********use and care**********
+//                ***********Attributes**********
 
         linear3 = (LinearLayout)findViewById(R.id.linear3);
         linear4 = (LinearLayout)findViewById(R.id.linear4);
-        discription2 = (TextView)findViewById(R.id.discription2);
+        productAttributes = (TextView)findViewById(R.id.discription2);
 
 
         linear3.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +111,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear4.setVisibility(View.VISIBLE);
                 linear3.setVisibility(View.GONE);
-                discription2.setVisibility(View.VISIBLE);
+                productAttributes.setVisibility(View.VISIBLE);
 
             }
         });
@@ -119,7 +123,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear4.setVisibility(View.GONE);
                 linear3.setVisibility(View.VISIBLE);
-                discription2.setVisibility(View.GONE);
+                productAttributes.setVisibility(View.GONE);
 
 
             }
@@ -175,14 +179,16 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
 
 
-//         ********Slider*********
+//         ********Product Image Slider*********
 
         mDemoSlider = (SliderLayout)findViewById(R.id.slider);
 
-        HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
-        file_maps.put("1", R.drawable.rain4);
-        file_maps.put("2",R.drawable.rain5);
-        file_maps.put("3",R.drawable.rain6);
+        HashMap<String,String> file_maps = new HashMap<String, String>();
+
+        for (int i = 0; i < productImages.size(); i++){
+            file_maps.put(String.valueOf(i), productImages.get(i));
+        }
+
 
 
         for(String name : file_maps.keySet()){

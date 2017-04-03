@@ -1,6 +1,7 @@
 package gr.clink.nopandroidclient.model;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 /**
  * Created by themisp on 16/1/2017.
@@ -14,14 +15,14 @@ public class Product {
     private String fullDescription;
     private Integer stockQuantity;
     private Float   productPrice;
-    private List<String> pictureURLS;
+    private ArrayList<String> pictureURLS;
     private String CategoryName;
 
     public Product(){
 
     }
 
-    public Product(String productName , String categoryName, Integer productId, String shortDescription, String fullDescription, Integer stockQuantity, Float productPrice, List<String> pictureURLS) {
+    public Product(String productName , String categoryName, Integer productId, String shortDescription, String fullDescription, Integer stockQuantity, Float productPrice, ArrayList<String> pictureURLS) {
         this.productName = productName;
         this.productId = productId;
         this.shortDescription = shortDescription;
@@ -88,7 +89,7 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public List<String> getPictureURLS() {
+    public ArrayList<String> getPictureURLS() {
         return pictureURLS;
     }
 
@@ -99,7 +100,7 @@ public class Product {
             return null;
     }
 
-    public void setPictureURLS(List<String> pictureURLS) {
+    public void setPictureURLS(ArrayList<String> pictureURLS) {
         this.pictureURLS = pictureURLS;
     }
 }
