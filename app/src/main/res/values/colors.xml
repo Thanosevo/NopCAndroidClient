@@ -9,6 +9,9 @@
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
     <color name="list_view_example_selection_action_mode_background">#FF5D4037</color>
+    <color name="list_view_example_selection_behind_delete">#FFFF1744</color>
+    <color name="list_view_example_selection_behind_fav">#FFF3AF40</color>
+    <color name="list_view_example_selection_line_separator_color">#FFD2C7C3</color>
     <color name="selectionColor">#20000000</color>
     <color name="colorSub">#b0afaf</color>
     <color name="colorTex">#585858</color>

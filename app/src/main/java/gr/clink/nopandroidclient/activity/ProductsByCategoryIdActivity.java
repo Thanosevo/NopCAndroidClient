@@ -13,17 +13,20 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
 import com.telerik.widget.list.RadListView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import gr.clink.nopandroidclient.R;
-import gr.clink.nopandroidclient.fragment.CategoriesFragment;
+import gr.clink.nopandroidclient.adapters.ProductAdapter;
 import gr.clink.nopandroidclient.model.Product;
-import gr.clink.nopandroidclient.model.ProductAdapter;
 import gr.clink.nopandroidclient.other.Globals;
 import gr.clink.nopandroidclient.other.JSONParser;
 import gr.clink.nopandroidclient.other.TypefaceSpan;
@@ -52,7 +55,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
 
         listView = (RadListView) findViewById(R.id.listView);
         listView.setLayoutManager(new LinearLayoutManager(ProductsByCategoryIdActivity.this));
-        listView.addItemClickListener(new ProductsByCategoryIdActivity.ListViewClickListener());
+        listView.addItemClickListener(new ListViewClickListener());
         new GetAsync().execute(categoryId.toString());
 
     }
@@ -81,7 +84,13 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
 
                 }
 
-                productList.add(new Product(name,categoryName,id,shortDescription,fullDescription,stockQuantity,price,pictureURLs));
+                JSONArray attributesArray = product.getJSONArray("ProductAttributes");
+                HashMap<String, String> attributes = new HashMap<String, String>();
+                for (int k = 0;k < attributesArray.length(); k++) {
+                    attributes.put(attributesArray.getJSONObject(k).getString("Attribute"), attributesArray.getJSONObject(k).getString("Value"));
+                }
+
+                productList.add(new Product(name,categoryName,id,shortDescription,fullDescription,stockQuantity,price,pictureURLs, attributes));
             }
 
     }
@@ -120,6 +129,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
         intent.putExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION, product.getFullDescription());
         intent.putExtra(Globals.ProductDetails.PRODUCT_PRICE, product.getProductPrice());
         intent.putExtra(Globals.ProductDetails.PRODUCT_IMAGES, product.getPictureURLS());
+        intent.putExtra(Globals.ProductDetails.PRODUCT_ATTRIBUTES, product.getProductAttributes());
 
         startActivity(intent);
     }

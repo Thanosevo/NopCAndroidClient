@@ -301,18 +301,19 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <customfonts.MyTextView
-                    android:visibility="gone"
-                    android:layout_margin="16dp"
-                    android:id="@+id/discription2"
-                    android:layout_weight="1"
+                <com.telerik.widget.dataform.visualization.RadDataForm
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="description 2"
+                    android:id="@+id/attributesDataForm"
+                    android:visibility="gone"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
                     android:textSize="12.5dp"
                     android:lineSpacingExtra="4.5dp"
                     android:textColor="@color/colorTex"
                     />
+
+
 
 
 

@@ -1,6 +1,7 @@
 package gr.clink.nopandroidclient.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -17,12 +18,15 @@ public class Product {
     private Float   productPrice;
     private ArrayList<String> pictureURLS;
     private String CategoryName;
+    private HashMap<String, String> productAttributes;
 
     public Product(){
 
     }
 
-    public Product(String productName , String categoryName, Integer productId, String shortDescription, String fullDescription, Integer stockQuantity, Float productPrice, ArrayList<String> pictureURLS) {
+
+
+    public Product(String productName , String categoryName, Integer productId, String shortDescription, String fullDescription, Integer stockQuantity, Float productPrice, ArrayList<String> pictureURLS, HashMap<String, String> attributes) {
         this.productName = productName;
         this.productId = productId;
         this.shortDescription = shortDescription;
@@ -30,6 +34,8 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.productPrice = productPrice;
         this.pictureURLS = pictureURLS;
+        this.productAttributes = attributes;
+
         CategoryName = categoryName;
     }
 
@@ -102,5 +108,13 @@ public class Product {
 
     public void setPictureURLS(ArrayList<String> pictureURLS) {
         this.pictureURLS = pictureURLS;
+    }
+
+    public HashMap<String, String> getProductAttributes() {
+        return productAttributes;
+    }
+
+    public void setProductAttributes(HashMap<String, String> productAttributes) {
+        this.productAttributes = productAttributes;
     }
 }

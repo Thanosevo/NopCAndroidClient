@@ -1,5 +1,6 @@
-package gr.clink.nopandroidclient.model;
+package gr.clink.nopandroidclient.adapters;
 
+import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
@@ -16,23 +17,32 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.telerik.widget.list.ListViewHolder;
+import com.telerik.widget.numberpicker.RadNumberPicker;
 
 import gr.clink.nopandroidclient.R;
+import gr.clink.nopandroidclient.model.Category;
 
 
-class CategoryItemViewHolder extends ListViewHolder {
+class ShoppingCartItemViewHolder extends ListViewHolder {
 
     public SimpleDraweeView itemImage;
     public TextView subtitle;
     public TextView title;
     public Category entity;
+    public RadNumberPicker nPicker;
     private String prefix;
-    public CategoryItemViewHolder(View itemView) {
+
+    public ShoppingCartItemViewHolder(View itemView, Context context) {
         super(itemView);
         prefix = itemView.getResources().getString(R.string.category_prefix);
         this.itemImage = (SimpleDraweeView) itemView.findViewById(R.id.imageView);
         this.title = (TextView) itemView.findViewById(R.id.title);
         this.subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+        this.nPicker = (RadNumberPicker) itemView.findViewById(R.id.number_picker);
+        this.nPicker.setMinimum(1);
+        this.nPicker.setMaximum(200);
+        this.nPicker.setPluralFormatString("%.0f " + context.getResources().getString(R.string.cart_products));
+        this.nPicker.setSingleFormatString("%.0f " + context.getResources().getString(R.string.cart_product));
 
         View recipeInfoBackground = itemView.findViewById(R.id.recipeInfo);
         if (recipeInfoBackground != null) {

@@ -34,10 +34,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.fragment.CategoriesFragment;
 import gr.clink.nopandroidclient.fragment.HomeFragment;
-import gr.clink.nopandroidclient.fragment.MoviesFragment;
 import gr.clink.nopandroidclient.fragment.NotificationsFragment;
 import gr.clink.nopandroidclient.fragment.ProfileFragment;
 import gr.clink.nopandroidclient.fragment.SettingsFragment;
+import gr.clink.nopandroidclient.fragment.ShoppingCartFragment;
 import gr.clink.nopandroidclient.model.UserInformation;
 import gr.clink.nopandroidclient.other.CircleTransform;
 import gr.clink.nopandroidclient.other.TypefaceSpan;
@@ -63,7 +63,7 @@ public class  MainActivity extends AppCompatActivity {
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";
     private static final String TAG_CATEGORIES = "categories";
-    private static final String TAG_MOVIES = "movies";
+    private static final String TAG_SHOPPINGCART = "cart";
     private static final String TAG_NOTIFICATIONS = "notifications";
     private static final String TAG_SETTINGS = "settings";
     private static final String TAG_PROFILE = "profile";
@@ -135,7 +135,7 @@ public class  MainActivity extends AppCompatActivity {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.inflateMenu(R.menu.activity_main_drawer);
+        //navigationView.inflateMenu(R.menu.activity_main_drawer);
         menuType = DrawerMenuType.Standard;
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -267,7 +267,7 @@ public class  MainActivity extends AppCompatActivity {
                     return new CategoriesFragment();
                 case 2:
                     // movies fragment
-                    return new MoviesFragment();
+                    return new ShoppingCartFragment();
                 case 3:
                     // notifications fragment
                     return new NotificationsFragment();
@@ -321,9 +321,9 @@ public class  MainActivity extends AppCompatActivity {
                             navItemIndex = 1;
                             CURRENT_TAG = TAG_CATEGORIES;
                             break;
-                        case R.id.nav_movies:
+                        case R.id.nav_shopping_cart:
                             navItemIndex = 2;
-                            CURRENT_TAG = TAG_MOVIES;
+                            CURRENT_TAG = TAG_SHOPPINGCART;
                             break;
                         case R.id.nav_notifications:
                             navItemIndex = 3;

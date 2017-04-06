@@ -1,4 +1,4 @@
-package gr.clink.nopandroidclient.model;
+package gr.clink.nopandroidclient.adapters;
 
 /**
  * Created by themisp on 10/1/2017.

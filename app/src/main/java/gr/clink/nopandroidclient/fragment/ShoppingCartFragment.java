@@ -1,8 +1,6 @@
 package gr.clink.nopandroidclient.fragment;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.telerik.android.common.Function;
-import com.telerik.widget.list.ListViewDataSourceAdapter;
 import com.telerik.widget.list.RadListView;
-import com.telerik.widget.list.StickyHeaderBehavior;
+import com.telerik.widget.list.SwipeExecuteBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,143 +21,45 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.activity.ProductsByCategoryIdActivity;
+import gr.clink.nopandroidclient.adapters.ShoppingCartAdapter;
 import gr.clink.nopandroidclient.model.Category;
-import gr.clink.nopandroidclient.adapters.CategoryAdapter;
+import gr.clink.nopandroidclient.model.UserInformation;
 import gr.clink.nopandroidclient.other.Globals;
 import gr.clink.nopandroidclient.other.JSONParser;
 
-
-public class CategoriesFragment extends FragmentBase {
-
+public class ShoppingCartFragment extends FragmentBase {
     private List<Category> categories = new ArrayList<>();
-    RadListView listView;
-    private ArrayList<String> availableFilters = new ArrayList<>();
-    CategoryAdapter categoryAdapter;
+    private RadListView listView;
+    private ShoppingCartAdapter shoppingCartAdapter;
+    private SwipeExecuteBehavior swipeExecuteBehavior;
 
-    public CategoriesFragment() {
-    }
-
-    private List<String> getAllCategories(){
-        List<String> result = new ArrayList<>();
-        for (Category category: categories) {
-            if(!result.contains(category.getParentCategoryName())){
-                result.add(category.getParentCategoryName());
-            }
-        }
-        return result;
-    }
-
-    private boolean[] getfilterSelections(){
-        List<Boolean> list = new ArrayList<>();
-        Set<String> groupCategories = new LinkedHashSet<>();
-        for (Category category: categories) {
-            groupCategories.add(category.getParentCategoryName());
-        }
-        for (String category: groupCategories) {
-             list.add(availableFilters.contains(category));
-        }
-        boolean[] result = new boolean[list.size()];
-        int i = 0;
-        for (Boolean s: list){
-            result[i] = s.booleanValue();
-            i++;
-        }
-        return result;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(UserInformation.getInstance().hasEmptyCart()){
+            return inflater.inflate(R.layout.fragment_shopping_cart_empty, container, false);
+        }
         new GetAsync().execute();
 
-        View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
         listView = (RadListView) rootView.findViewById(R.id.listView);
 
-        GridLayoutManager gridLayout = new GridLayoutManager(getActivity(), 2);
+        GridLayoutManager gridLayout = new GridLayoutManager(getActivity(), 1);
         listView.setLayoutManager(gridLayout);
-
-        StickyHeaderBehavior stickyHeaderBehavior = new StickyHeaderBehavior();
-        listView.addBehavior(stickyHeaderBehavior);
-
         listView.addItemClickListener(new ListViewClickListener());
 
+        this.swipeExecuteBehavior = new SwipeExecuteBehavior();
+        this.swipeExecuteBehavior.addListener(new SwipeListener());
+        this.swipeExecuteBehavior.setAutoDissolve(false);
+        this.listView.addBehavior(this.swipeExecuteBehavior);
 
-
-
-
-
-        ImageButton btnShowSettings = (ImageButton) rootView.findViewById(R.id.btnShowSettings);
-        btnShowSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (CategoriesFragment.this.categories.isEmpty()){
-                    Toast.makeText(getActivity(), "Please wait for the photos to download...", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-                dialogBuilder.setTitle(R.string.categories_layout_modes_dialog_title);
-                dialogBuilder.setMultiChoiceItems(
-                        getAllCategories().toArray(new String[0]),
-                        getfilterSelections(),
-                        new DialogInterface.OnMultiChoiceClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                String[] typedArray = getAllCategories().toArray(new String[0]);
-                                if (isChecked) {
-                                    availableFilters.add(typedArray[which]);
-                                } else {
-                                    availableFilters.remove(typedArray[which]);
-                                }
-                            }
-                        });
-
-                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        ListViewDataSourceAdapter adapter = (ListViewDataSourceAdapter)listView.getAdapter();
-                        adapter.clearFilterDescriptors();
-                        adapter.addFilterDescriptor(new Function<Object, Boolean>() {
-                            @Override
-                            public Boolean apply(Object argument) {
-                                Category categories = (Category) argument;
-                                boolean passesFilter = false;
-
-                                for (String s: availableFilters){
-                                    if (s.equalsIgnoreCase(categories.getParentCategoryName())){
-                                        return true;
-                                    }
-                                }
-
-                                return passesFilter;
-                            }
-                        });
-
-                        dialog.dismiss();
-                    }
-                });
-                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                dialogBuilder.create().show();
-
-            }
-        });
         return rootView;
     }
-
-
 
     /**
      *
@@ -170,15 +67,14 @@ public class CategoriesFragment extends FragmentBase {
      * @throws JSONException
      * sets the category list from JSON
      */
-    private void setListOfCategories(JSONArray arr,String parentName) throws JSONException {
+    private void setListOfCategories(JSONArray arr, String parentName) throws JSONException {
         for (int i = 0; i < arr.length(); i++) {
             JSONObject category = arr.getJSONObject(i);
             String name = category.getString("Name");
             Integer id = category.getInt("Id");
             JSONArray subCategories = category.getJSONArray("SubCategories");
             String imURL = category.getString("PictureURL");
-            // Add filters
-            availableFilters.add(name);
+
             if (subCategories.length() != 0){
                 setListOfCategories(subCategories,name);
             }else{
@@ -193,8 +89,6 @@ public class CategoriesFragment extends FragmentBase {
 
     @Override
     protected boolean usesInternet() {return true;}
-
-
 
 //    class BlogPostViewCallback implements ActionMode.Callback {
 //        int itemPosition;
@@ -249,18 +143,52 @@ public class CategoriesFragment extends FragmentBase {
     class ListViewClickListener implements RadListView.ItemClickListener {
         @Override
         public void onItemClick(int itemPosition, MotionEvent motionEvent) {
-            if( categoryAdapter != null ){
-                try {
-                    Category tappedCategory = (Category) categoryAdapter.getItem(itemPosition);
-                    showProductListViewForCategory(tappedCategory);
-                }catch (ClassCastException e){
-
-                }
-            }
+            Toast.makeText(getContext(),"item clicked",Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onItemLongClick(int i, MotionEvent motionEvent) {
+
+        }
+    }
+
+    class SwipeListener implements SwipeExecuteBehavior.SwipeExecuteListener {
+        public SwipeListener() {
+        }
+
+        @Override
+        public void onSwipeStarted(int position) {
+        }
+
+        @Override
+        public void onSwipeProgressChanged(int position, int currentOffset, View swipeContent) {
+            if (swipeContent == null) {
+                return;
+            }
+
+            View leftLayout = ((ViewGroup) swipeContent).getChildAt(0);
+            View rightLayout = ((ViewGroup) swipeContent).getChildAt(1);
+
+            if (currentOffset > 0) {
+                leftLayout.setVisibility(View.INVISIBLE);
+                rightLayout.setVisibility(View.INVISIBLE);
+            } else {
+                leftLayout.setVisibility(View.INVISIBLE);
+                rightLayout.setVisibility(View.VISIBLE);
+            }
+
+//            if(selectionBehavior.isInProgress()) {
+//                selectionBehavior.endSelection();
+//            }
+        }
+
+        @Override
+        public void onSwipeEnded(int position, int finalOffset) {
+
+        }
+
+        @Override
+        public void onExecuteFinished(int position) {
 
         }
     }
@@ -354,16 +282,9 @@ public class CategoriesFragment extends FragmentBase {
                 try {
                     // Set List
                     setListOfCategories(result,null);
-                    categoryAdapter = new CategoryAdapter(categories, CategoriesFragment.this.getActivity(), R.layout.category_list_item_layout );
+                    shoppingCartAdapter = new ShoppingCartAdapter(categories,ShoppingCartFragment.this.getActivity(), R.layout.shopping_cart_list_item_layout );
 
-                    categoryAdapter.addGroupDescriptor(new Function<Object, Object>() {
-                        @Override
-                        public Object apply(Object argument) {
-                            Category container = (Category) argument;
-                            return container.getParentCategoryName();
-                        }
-                    });
-                    listView.setAdapter(categoryAdapter);
+                    listView.setAdapter(shoppingCartAdapter);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -5,19 +5,28 @@ package gr.clink.nopandroidclient.activity;
  */
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.google.gson.Gson;
+import com.telerik.android.common.Procedure;
+import com.telerik.widget.dataform.visualization.RadDataForm;
+import com.telerik.widget.dataform.visualization.core.EntityPropertyViewer;
 
 import org.fabiomsr.moneytextview.MoneyTextView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.fragment.ChildAnimationExample;
 import gr.clink.nopandroidclient.fragment.SliderLayout;
@@ -31,11 +40,13 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
     private String productName;
     private String productCategory;
     private ArrayList<String> productImages;
+    private HashMap<String, String> productAttributes;
 
     //    Typeface fonts1,fonts2;
     LinearLayout linear1,linear2, linear3, linear4, linear5, linear6;
 
-    TextView discription3, productAttributes, productFullDescriptionTextView, productCategoryTextView, productNameTextView;
+    TextView discription3, productFullDescriptionTextView, productCategoryTextView, productNameTextView;
+    RadDataForm productAttributesDataForm;
     MoneyTextView productPriceTextView;
 
     @Override
@@ -50,6 +61,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         productFullDescription = intent.getStringExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION);
         productCategory = intent.getStringExtra(Globals.ProductDetails.PRODUCT_CATEGORY);
         productImages = intent.getStringArrayListExtra(Globals.ProductDetails.PRODUCT_IMAGES);
+        productAttributes = (HashMap<String, String>)intent.getSerializableExtra(Globals.ProductDetails.PRODUCT_ATTRIBUTES);
         // Set Category TextView
         productCategoryTextView  = (TextView)findViewById(R.id.productCategory);
         productCategoryTextView.setText(productCategory);
@@ -60,8 +72,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         productPriceTextView = (MoneyTextView)findViewById(R.id.price);
         productPriceTextView.setAmount(productPrice);
 
-
-        //System.out.println(productImages.size() + "<<<<<<<------------------------");
+        //System.out.println(productAttributes.size() + "<<<<<<<------------------------");
 
 //                ***********description**********
 
@@ -101,7 +112,20 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
         linear3 = (LinearLayout)findViewById(R.id.linear3);
         linear4 = (LinearLayout)findViewById(R.id.linear4);
-        productAttributes = (TextView)findViewById(R.id.discription2);
+
+
+        productAttributesDataForm = (RadDataForm)findViewById(R.id.attributesDataForm);
+        String productAttributesJSON = new Gson().toJson(productAttributes);
+
+        try {
+            JSONObject jsonObject = new JSONObject(productAttributesJSON);
+            productAttributesDataForm.setEntity(jsonObject);
+        } catch (JSONException e) {
+            Log.e("json", "error parsing json", e);
+        }
+
+        //productAttributesDataForm.setLabelPosition(LabelPosition.LEFT);
+        productAttributesDataForm.setIsReadOnly(true);
 
 
         linear3.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +135,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear4.setVisibility(View.VISIBLE);
                 linear3.setVisibility(View.GONE);
-                productAttributes.setVisibility(View.VISIBLE);
+                productAttributesDataForm.setVisibility(View.VISIBLE);
 
             }
         });
@@ -123,7 +147,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
                 linear4.setVisibility(View.GONE);
                 linear3.setVisibility(View.VISIBLE);
-                productAttributes.setVisibility(View.GONE);
+                productAttributesDataForm.setVisibility(View.GONE);
 
 
             }
@@ -212,6 +236,15 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         mDemoSlider.setDuration(4000);
         mDemoSlider.addOnPageChangeListener(this);
 
+
+        productAttributesDataForm.setEditorCustomizations(new Procedure<EntityPropertyViewer>() {
+            @Override
+            public void apply(EntityPropertyViewer entityPropertyViewer) {
+                TextView headerView = (TextView)entityPropertyViewer.getHeaderView();
+                Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
+                headerView.setTypeface(boldTypeface);
+            }
+        });
     }
 
 
@@ -219,4 +252,6 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
     public void onSliderClick(BaseSliderView slider) {
 
     }
+
+
 }

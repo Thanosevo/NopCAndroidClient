@@ -23,6 +23,7 @@ public class Globals {
         public static String PRODUCT_DESCRIPTION = "productDescription";
         public static String PRODUCT_NAME = "productName";
         public static String PRODUCT_IMAGES = "productImages";
+        public static String PRODUCT_ATTRIBUTES = "productAttributes";
     }
 
 }

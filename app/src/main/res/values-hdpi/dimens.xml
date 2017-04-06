@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="cart_right_width">200dp</dimen>
+    <dimen name="cart_picker_width">160dp</dimen>
+</resources>

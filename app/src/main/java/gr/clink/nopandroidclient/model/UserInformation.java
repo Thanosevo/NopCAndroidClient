@@ -64,7 +64,6 @@ public class UserInformation {
             return NotRegistered;
         }
     }
-
     private static UserInformation ourInstance = new UserInformation();
     public static UserInformation getInstance() {
         return ourInstance;
@@ -75,6 +74,7 @@ public class UserInformation {
     private String guid;
     private List<Integer> roles;
     private List<Address> addresses;
+    private List<CartProduct> cartProducts;
 
     public String getGuid() {
         return guid;
@@ -97,14 +97,53 @@ public class UserInformation {
         this.name = name;
     }
 
+    public List<CartProduct> getCartProducts() {
+        return cartProducts;
+    }
+
+    public void addCartProduct(CartProduct np){
+        Boolean productFound = false;
+        for (CartProduct p: cartProducts) {
+            if(p.getProductId().equals(np.getProductId())){
+                p.setQuantity(p.getQuantity() + np.getQuantity());
+                productFound = true;
+                break;
+            }
+        }
+        if(!productFound)
+            cartProducts.add(np);
+    }
+
+    public void updateCartProductQuantity(int Id,int qty){
+        for (CartProduct p: cartProducts) {
+            if(p.getProductId().equals(Id)){
+                p.setQuantity(qty);
+            }
+        }
+    }
+
+    public void removeCartProduct(int productId){
+        for (CartProduct p: cartProducts) {
+            if(p.getProductId() == productId){
+                cartProducts.remove(p);
+            }
+        }
+    }
+
+    public Boolean hasEmptyCart(){
+        return cartProducts.isEmpty();
+    }
+
+    public void clearCart(){
+        cartProducts.clear();
+    }
+
     private UserInformation() {
+        cartProducts = new ArrayList<CartProduct>();
     }
 
     public boolean isAuthenticated(){
-        if (userName != null) {
-            return true;
-        }
-        return false;
+        return userName != null;
     }
 
     private static class CustomerConstants{

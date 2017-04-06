@@ -1,4 +1,4 @@
-package gr.clink.nopandroidclient.model;
+package gr.clink.nopandroidclient.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import com.telerik.widget.list.ListViewDataSourceAdapter;
 import com.telerik.widget.list.ListViewHolder;
 
 import java.util.List;
+
+import gr.clink.nopandroidclient.model.Product;
 
 /**
  * Created by themisp on 16/1/2017.

@@ -1,4 +1,4 @@
-package gr.clink.nopandroidclient.model;
+package gr.clink.nopandroidclient.adapters;
 
 /**
  * Created by Thanos on 1/10/2017.
@@ -13,6 +13,7 @@ import com.telerik.widget.list.ListViewDataSourceAdapter;
 import com.telerik.widget.list.ListViewHolder;
 import java.util.List;
 import gr.clink.nopandroidclient.R;
+import gr.clink.nopandroidclient.model.Category;
 
 
 public class CategoryAdapter extends ListViewDataSourceAdapter {

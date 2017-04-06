@@ -1,4 +1,4 @@
-package gr.clink.nopandroidclient.model;
+package gr.clink.nopandroidclient.adapters;
 
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -20,6 +20,7 @@ import com.telerik.widget.list.ListViewHolder;
 import org.fabiomsr.moneytextview.MoneyTextView;
 
 import gr.clink.nopandroidclient.R;
+import gr.clink.nopandroidclient.model.Product;
 
 /**
  * Created by themisp on 16/1/2017.
