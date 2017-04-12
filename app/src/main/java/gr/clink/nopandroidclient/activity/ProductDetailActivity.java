@@ -106,6 +106,25 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
             }
         });
 
+        ImageView goToCartBtn = (ImageView) findViewById(R.id.productdetail_goto_cart);
+        goToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(Globals.POPUPRESULT,Globals.PopupResponses.GOTOCART);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
+
+        ImageView addToWishlist = (ImageView) findViewById(R.id.add_to_wishlist);
+        addToWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               /*TODO: ADD IMPLEMENTATION FOR WISHLIST*/
+            }
+        });
+
         addToCart = (MyTextView) findViewById(R.id.textview_add_to_cart) ;
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,12 +222,12 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
 //                ***********design**********
 
-        linear5 = (LinearLayout)findViewById(R.id.linear5);
+        /*linear5 = (LinearLayout)findViewById(R.id.linear5);
         linear6 = (LinearLayout)findViewById(R.id.linear6);
-        discription3 = (TextView)findViewById(R.id.discription3);
+        discription3 = (TextView)findViewById(R.id.discription3);*/
 
 
-        linear5.setOnClickListener(new View.OnClickListener() {
+        /*linear5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -218,9 +237,9 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
                 discription3.setVisibility(View.VISIBLE);
 
             }
-        });
+        });*/
 
-        linear6.setOnClickListener(new View.OnClickListener() {
+        /*linear6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -231,7 +250,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
 
             }
-        });
+        });*/
 
 
 
