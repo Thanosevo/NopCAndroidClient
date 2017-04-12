@@ -1,5 +1,6 @@
 package gr.clink.nopandroidclient.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,6 +13,8 @@ import android.text.SpannableString;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.telerik.widget.list.RadListView;
@@ -38,6 +41,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private List<Product> productList = new ArrayList<>();
     private ProductAdapter productAdapter;
+    private RelativeLayout back_dim_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +52,32 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
         categoryName = intent.getStringExtra(Globals.ProductsByCatagoryIdActivityProperties.CATEGORY_NAME);
         setContentView(R.layout.activity_products_by_category_id);
 
+        back_dim_layout = (RelativeLayout) findViewById(R.id.bac_dim_layout);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setToolbarTitle();
 
+        ImageView backBtn = (ImageView) findViewById(R.id.back_btn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         listView = (RadListView) findViewById(R.id.listView);
         listView.setLayoutManager(new LinearLayoutManager(ProductsByCategoryIdActivity.this));
         listView.addItemClickListener(new ListViewClickListener());
         new GetAsync().execute(categoryId.toString());
 
+    }
+    public void enableDimBackground(){
+        back_dim_layout.setVisibility(View.VISIBLE);
+    }
+
+    public void disableDimBackground(){
+        back_dim_layout.setVisibility(View.GONE);
     }
 
     private void setToolbarTitle() {
@@ -83,7 +103,6 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
                     pictureURLs.add(pictureArray.getString(j));
 
                 }
-
                 JSONArray attributesArray = product.getJSONArray("ProductAttributes");
                 HashMap<String, String> attributes = new HashMap<String, String>();
                 for (int k = 0;k < attributesArray.length(); k++) {
@@ -95,12 +114,21 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
 
     }
 
-
-    public void addToCartListener(View v)
-    {
-        System.out.println("TADA!");
-    }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        disableDimBackground();
+        if(resultCode == Activity.RESULT_OK){
+            String result = data.getExtras().getString(Globals.POPUPRESULT);
+            switch (result){
+                case Globals.PopupResponses.CONTINUESHOPPING:
+                    break;
+                case Globals.PopupResponses.GOTOCART:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }//onActivityResult
 
     class ListViewClickListener implements RadListView.ItemClickListener {
         @Override
@@ -110,7 +138,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
                     Product tappedProduct = (Product) productAdapter.getItem(itemPosition);
                     showProductDetail(tappedProduct);
                 }catch (ClassCastException e){
-
+                    System.out.println(e.getStackTrace().toString());
                 }
             }
         }
@@ -124,13 +152,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
 
     private void showProductDetail(Product product){
         Intent intent = new Intent(this, ProductDetailActivity.class);
-        intent.putExtra(Globals.ProductDetails.PRODUCT_NAME,product.getProductName());
-        intent.putExtra(Globals.ProductDetails.PRODUCT_CATEGORY, product.getCategoryName());
-        intent.putExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION, product.getFullDescription());
-        intent.putExtra(Globals.ProductDetails.PRODUCT_PRICE, product.getProductPrice());
-        intent.putExtra(Globals.ProductDetails.PRODUCT_IMAGES, product.getPictureURLS());
-        intent.putExtra(Globals.ProductDetails.PRODUCT_ATTRIBUTES, product.getProductAttributes());
-
+        intent.putExtra(Globals.PRODUCT,product);
         startActivity(intent);
     }
 

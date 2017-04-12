@@ -104,19 +104,19 @@ public class UserInformation {
     public void addCartProduct(CartProduct np){
         Boolean productFound = false;
         for (CartProduct p: cartProducts) {
-            if(p.getProductId().equals(np.getProductId())){
+            if(p.getProduct().getProductId().equals(np.getProduct().getProductId())){
                 p.setQuantity(p.getQuantity() + np.getQuantity());
                 productFound = true;
                 break;
             }
         }
         if(!productFound)
-            cartProducts.add(np);
+            cartProducts.add(0,np);
     }
 
     public void updateCartProductQuantity(int Id,int qty){
         for (CartProduct p: cartProducts) {
-            if(p.getProductId().equals(Id)){
+            if(p.getProduct().getProductId().equals(Id)){
                 p.setQuantity(qty);
             }
         }
@@ -124,7 +124,7 @@ public class UserInformation {
 
     public void removeCartProduct(int productId){
         for (CartProduct p: cartProducts) {
-            if(p.getProductId() == productId){
+            if(p.getProduct().getProductId() == productId){
                 cartProducts.remove(p);
             }
         }

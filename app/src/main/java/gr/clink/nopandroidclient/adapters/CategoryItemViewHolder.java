@@ -1,11 +1,5 @@
 package gr.clink.nopandroidclient.adapters;
 
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +13,7 @@ import com.telerik.widget.list.ListViewHolder;
 
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.model.Category;
+import gr.clink.nopandroidclient.other.Globals;
 
 
 class CategoryItemViewHolder extends ListViewHolder {
@@ -37,26 +32,10 @@ class CategoryItemViewHolder extends ListViewHolder {
 
         View recipeInfoBackground = itemView.findViewById(R.id.recipeInfo);
         if (recipeInfoBackground != null) {
-            recipeInfoBackground.setBackgroundDrawable(this.createInfoBackground());
+            recipeInfoBackground.setBackgroundDrawable(Globals.createInfoBackground(false));
         }
     }
 
-    private Drawable createInfoBackground() {
-        ShapeDrawable.ShaderFactory shaderFactory = new ShapeDrawable.ShaderFactory() {
-            @Override
-            public Shader resize(int width, int height) {
-                return new LinearGradient(width / 2.0f, 0, width / 2.0f, height,
-                        new int[]{0x00ffffff, 0xccffffff, 0xccffffff},
-                        new float[]{0, 0.3f, 1}, Shader.TileMode.REPEAT);
-            }
-        };
-
-        PaintDrawable background = new PaintDrawable();
-        background.setShape(new RectShape());
-        background.setShaderFactory(shaderFactory);
-
-        return background;
-    }
 
     public void bind(Category entity) {
         this.entity = entity;

@@ -16,7 +16,7 @@ import com.telerik.widget.list.ListViewHolder;
 import java.util.List;
 
 import gr.clink.nopandroidclient.R;
-import gr.clink.nopandroidclient.model.Category;
+import gr.clink.nopandroidclient.model.CartProduct;
 
 
 public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
@@ -43,20 +43,20 @@ public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
         if (deletedItemId == itemId) {
             //TODO: REMOVE ITEM
         }
-        typedViewHolder.bind((Category) entity);
+        typedViewHolder.bind((CartProduct) entity);
     }
 
     @Override
     public ListViewHolder onCreateSwipeContentHolder(ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(R.layout.cart_list_view_selection_item_swipe_content, viewGroup, false);
-        final CategorySwipeViewHolder viewHolder = new CategorySwipeViewHolder(view);
+        final CartItemSwipeViewHolder viewHolder = new CartItemSwipeViewHolder(view);
 
         viewHolder.imgFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Category postToFav = getSwipedCategory();
-                //postToFav.setFavourite(!postToFav.isFavourite());
+                CartProduct productToFav = getSwipedCartProduct();
+                //productToFav.setFavourite(!postToFav.isFavourite());
                 notifySwipeExecuteFinished();
             }
         });
@@ -64,13 +64,13 @@ public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
         viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Category categoryToDelete = getSwipedCategory();
-                deletedItemId = getItemId(categoryToDelete);
+                CartProduct CartProductToDelete = getSwipedCartProduct();
+                deletedItemId = getItemId(CartProductToDelete);
                 notifyItemChanged(listViewCurrentSwipeIndex);
                 notifySwipeExecuteFinished();
             }
         });
-        return new CategorySwipeViewHolder(view);
+        return new CartItemSwipeViewHolder(view);
     }
 
     @Override
@@ -78,19 +78,19 @@ public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
         listViewCurrentSwipeIndex = position;
     }
 
-    class CategorySwipeViewHolder extends ListViewHolder {
+    class CartItemSwipeViewHolder extends ListViewHolder {
 
         public ImageButton imgDelete;
         public ImageButton imgFavourite;
-        public CategorySwipeViewHolder(View itemView) {
+        public CartItemSwipeViewHolder(View itemView) {
             super(itemView);
             this.imgFavourite = (ImageButton) itemView.findViewById(R.id.imgFavourite);
             this.imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
         }
     }
 
-    private Category getSwipedCategory() {
-        return (Category) this.getItem(listViewCurrentSwipeIndex);
+    private CartProduct getSwipedCartProduct() {
+        return (CartProduct) this.getItem(listViewCurrentSwipeIndex);
     }
 
 }

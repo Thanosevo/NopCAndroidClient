@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context="gr.clink.nopandroidclient.activity.ProductDetailActivity">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
@@ -18,14 +17,11 @@
     android:orientation="vertical"
     android:background="#f2f2f2">
 
-
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar">
 
     </include>
-
-
     <ScrollView
         android:layout_marginTop="55dp"
         android:layout_marginBottom="50dp"
@@ -414,12 +410,12 @@
 
     <!--****buy****-->
     <customfonts.MyTextView
-        android:id="@+id/buy"
+        android:id="@+id/textview_add_to_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="ADD TO CARD"
-        android:textSize="16dp"
+        android:text="@string/add_to_cart"
+        android:textSize="16sp"
         android:textColor="#fff"
         android:gravity="center"
         android:padding="16dp"
@@ -433,7 +429,13 @@
 
 </RelativeLayout>
 
-
+    <RelativeLayout
+        android:id="@+id/bac_dim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C0000000"
+        android:visibility="gone" >
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
 
 

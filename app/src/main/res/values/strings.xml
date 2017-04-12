@@ -73,4 +73,9 @@
     <string name="title_activity_login_register">LoginRegisterActivity</string>
     <string name="title_login">Login</string>
     <string name="title_register">Register</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="proceed_to_checkout">Proceed to checkout</string>
+    <string name="item_added">This item was added to your shopping cart</string>
+    <string name="go_to_cart">Go to cart</string>
+    <string name="continue_shopping">Continue Shopping</string>
 </resources>

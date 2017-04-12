@@ -2,31 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/red"
     >
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imageView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="98dp"
-        android:text="add to cart" />
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="8dp"/>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/top_container"
+        >
+        <customfonts.MyTextView
+            android:id="@+id/title_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="20dp"
+            android:textSize="17sp"
+            android:textAlignment="center"
+            android:maxLines="2"
+            android:text="@string/item_added" />
+    </LinearLayout>
+    <customfonts.MyTextView
+        android:id="@+id/btn_go_to_cart"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Add" />
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/go_to_cart"
+        android:layout_margin="8dp"/>
 
-    <TextView
-        android:id="@+id/product_name"
-        android:layout_width="wrap_content"
+    <customfonts.MyTextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="62dp" />
+        android:layout_above="@id/btn_go_to_cart"
+        android:text="@string/continue_shopping"
+        android:id="@+id/btn_continue_shopping"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:padding="16dp"
+        />
 </RelativeLayout>

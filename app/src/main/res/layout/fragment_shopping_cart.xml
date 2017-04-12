@@ -12,14 +12,25 @@
         <com.telerik.widget.list.RadListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:paddingRight="-3dp"
-            android:paddingBottom="-3dp"
+            android:paddingBottom="50dp"
             android:scrollbars="vertical">
 
         </com.telerik.widget.list.RadListView>
     </RelativeLayout>
-
-
+    <customfonts.MyTextView
+        android:id="@+id/checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"
+        android:text="@string/proceed_to_checkout"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="10dp" />
 </FrameLayout>

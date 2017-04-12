@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -24,53 +26,81 @@ import org.fabiomsr.moneytextview.MoneyTextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
+import customfonts.MyTextView;
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.fragment.ChildAnimationExample;
 import gr.clink.nopandroidclient.fragment.SliderLayout;
+import gr.clink.nopandroidclient.model.CartProduct;
+import gr.clink.nopandroidclient.model.Product;
+import gr.clink.nopandroidclient.model.UserInformation;
 import gr.clink.nopandroidclient.other.Globals;
 
 public class ProductDetailActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
     SliderLayout mDemoSlider;
 
-    private Float productPrice;
-    private String productFullDescription;
-    private String productName;
-    private String productCategory;
-    private ArrayList<String> productImages;
-    private HashMap<String, String> productAttributes;
-
+    Product product;
     //    Typeface fonts1,fonts2;
     LinearLayout linear1,linear2, linear3, linear4, linear5, linear6;
 
-    TextView discription3, productFullDescriptionTextView, productCategoryTextView, productNameTextView;
-    RadDataForm productAttributesDataForm;
-    MoneyTextView productPriceTextView;
+    private TextView discription3, productFullDescriptionTextView, productCategoryTextView, productNameTextView;
+    private RadDataForm productAttributesDataForm;
+    private MoneyTextView productPriceTextView;
+    private MyTextView addToCart;
+    private RelativeLayout back_dim_layout;
+
+    public void enableDimBackground(){
+        back_dim_layout.setVisibility(View.VISIBLE);
+    }
+
+    public void disableDimBackground(){
+        back_dim_layout.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        disableDimBackground();
+    }//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
+        back_dim_layout = (RelativeLayout) findViewById(R.id.bac_dim_layout);
         // Get Product Details from prev screen
-        Intent intent = getIntent();
-        productName = intent.getStringExtra(Globals.ProductDetails.PRODUCT_NAME);
-        productPrice = intent.getFloatExtra(Globals.ProductDetails.PRODUCT_PRICE, 0.0f);
-        productFullDescription = intent.getStringExtra(Globals.ProductDetails.PRODUCT_DESCRIPTION);
-        productCategory = intent.getStringExtra(Globals.ProductDetails.PRODUCT_CATEGORY);
-        productImages = intent.getStringArrayListExtra(Globals.ProductDetails.PRODUCT_IMAGES);
-        productAttributes = (HashMap<String, String>)intent.getSerializableExtra(Globals.ProductDetails.PRODUCT_ATTRIBUTES);
+        product = getIntent().getExtras().getParcelable(Globals.PRODUCT);
         // Set Category TextView
         productCategoryTextView  = (TextView)findViewById(R.id.productCategory);
-        productCategoryTextView.setText(productCategory);
+        productCategoryTextView.setText(product.getCategoryName());
         // Set Product Name TextView
         productNameTextView = (TextView)findViewById(R.id.itemname);
-        productNameTextView.setText(productName);
+        productNameTextView.setText(product.getProductName());
         // Set Product Price TextView
         productPriceTextView = (MoneyTextView)findViewById(R.id.price);
-        productPriceTextView.setAmount(productPrice);
+        productPriceTextView.setAmount(product.getProductPrice());
+
+
+        ImageView backBtn = (ImageView) findViewById(R.id.back_btn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        addToCart = (MyTextView) findViewById(R.id.textview_add_to_cart) ;
+        addToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserInformation.getInstance().addCartProduct(new CartProduct(product,1));
+                Intent i = new Intent(ProductDetailActivity.this, AddToCartPopUpActivity.class);
+                i.putExtra(Globals.PRODUCT,product);
+                enableDimBackground();
+                startActivityForResult(i,1);
+            }
+        });
 
         //System.out.println(productAttributes.size() + "<<<<<<<------------------------");
 
@@ -80,7 +110,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         linear2 = (LinearLayout)findViewById(R.id.linear2);
         productFullDescriptionTextView = (TextView)findViewById(R.id.discription1);
         // Set Product Description
-        productFullDescriptionTextView.setText(productFullDescription);
+        productFullDescriptionTextView.setText(product.getFullDescription());
 
         linear1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +145,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
 
         productAttributesDataForm = (RadDataForm)findViewById(R.id.attributesDataForm);
-        String productAttributesJSON = new Gson().toJson(productAttributes);
+        String productAttributesJSON = new Gson().toJson(product.getProductAttributes());
 
         try {
             JSONObject jsonObject = new JSONObject(productAttributesJSON);
@@ -209,8 +239,8 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
 
         HashMap<String,String> file_maps = new HashMap<String, String>();
 
-        for (int i = 0; i < productImages.size(); i++){
-            file_maps.put(String.valueOf(i), productImages.get(i));
+        for (int i = 0; i < product.getPictureURLS().size(); i++){
+            file_maps.put(String.valueOf(i), product.getPictureURLS().get(i));
         }
 
 

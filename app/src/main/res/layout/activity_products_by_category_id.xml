@@ -15,16 +15,27 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay"
             android:id="@+id/appBar">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:src="@drawable/backarrow" />
 
             <android.support.v7.widget.Toolbar
-
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
             </android.support.v7.widget.Toolbar>
-
+            </LinearLayout>
         </android.support.design.widget.AppBarLayout>
 
         <com.telerik.widget.list.RadListView
@@ -53,5 +64,11 @@
             android:background="@color/transparent"
             android:src="@drawable/listview_layouts_fab" />
 
-
+    <RelativeLayout
+        android:id="@+id/bac_dim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C0000000"
+        android:visibility="gone" >
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

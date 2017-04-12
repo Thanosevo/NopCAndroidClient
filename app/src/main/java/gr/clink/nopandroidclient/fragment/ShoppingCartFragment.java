@@ -1,11 +1,7 @@
 package gr.clink.nopandroidclient.fragment;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,39 +11,36 @@ import android.widget.Toast;
 import com.telerik.widget.list.RadListView;
 import com.telerik.widget.list.SwipeExecuteBehavior;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import customfonts.MyTextView;
 import gr.clink.nopandroidclient.R;
-import gr.clink.nopandroidclient.activity.ProductsByCategoryIdActivity;
 import gr.clink.nopandroidclient.adapters.ShoppingCartAdapter;
-import gr.clink.nopandroidclient.model.Category;
-import gr.clink.nopandroidclient.model.UserInformation;
-import gr.clink.nopandroidclient.other.Globals;
-import gr.clink.nopandroidclient.other.JSONParser;
+import gr.clink.nopandroidclient.model.CartProduct;
 
 public class ShoppingCartFragment extends FragmentBase {
-    private List<Category> categories = new ArrayList<>();
     private RadListView listView;
     private ShoppingCartAdapter shoppingCartAdapter;
     private SwipeExecuteBehavior swipeExecuteBehavior;
-
+    private MyTextView checkout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(UserInformation.getInstance().hasEmptyCart()){
-            return inflater.inflate(R.layout.fragment_shopping_cart_empty, container, false);
-        }
-        new GetAsync().execute();
-
+//        if(UserInformation.getInstance().hasEmptyCart()){
+//            return inflater.inflate(R.layout.fragment_shopping_cart_empty, container, false);
+//        }
         View rootView = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
         listView = (RadListView) rootView.findViewById(R.id.listView);
+        checkout = (MyTextView) rootView.findViewById(R.id.checkout);
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),"Proceed to checkout",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        shoppingCartAdapter = new ShoppingCartAdapter(CartProduct.RandomCollectionOfCartProducts() /*UserInformation.getInstance().getCartProducts()*/,ShoppingCartFragment.this.getActivity(), R.layout.shopping_cart_list_item_layout );
+        listView.setAdapter(shoppingCartAdapter);
 
         GridLayoutManager gridLayout = new GridLayoutManager(getActivity(), 1);
         listView.setLayoutManager(gridLayout);
@@ -60,32 +53,6 @@ public class ShoppingCartFragment extends FragmentBase {
 
         return rootView;
     }
-
-    /**
-     *
-     * @param arr
-     * @throws JSONException
-     * sets the category list from JSON
-     */
-    private void setListOfCategories(JSONArray arr, String parentName) throws JSONException {
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject category = arr.getJSONObject(i);
-            String name = category.getString("Name");
-            Integer id = category.getInt("Id");
-            JSONArray subCategories = category.getJSONArray("SubCategories");
-            String imURL = category.getString("PictureURL");
-
-            if (subCategories.length() != 0){
-                setListOfCategories(subCategories,name);
-            }else{
-                if(parentName == null)
-                    categories.add(new Category(name,id,name,imURL));
-                else
-                    categories.add(new Category(parentName,id,name,imURL));
-            }
-        }
-    }
-
 
     @Override
     protected boolean usesInternet() {return true;}
@@ -191,109 +158,5 @@ public class ShoppingCartFragment extends FragmentBase {
         public void onExecuteFinished(int position) {
 
         }
-    }
-
-
-    private void showProductListViewForCategory(Category category){
-        Intent intent = new Intent(getActivity(), ProductsByCategoryIdActivity.class);
-
-        intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.ID,category.getId());
-        intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.CATEGORY_NAME,category.getName());
-        startActivity(intent);
-
-    }
-
-
-    /**
-     *  Class to Handle JSON from NOPCommerce
-     */
-    class GetAsync extends AsyncTask<String, String, JSONObject> {
-
-        JSONParser jsonParser = new JSONParser();
-
-        private ProgressDialog pDialog;
-
-        private final String LOGIN_URL = Globals.HOST + Globals.GET_CATEGORIES;
-
-        private static final String RESPONSE_CODE = "responseCode";
-        private static final String RESULT = "result";
-
-        @Override
-        protected void onPreExecute() {
-            pDialog = new ProgressDialog(getActivity());
-            pDialog.setMessage("Loading...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... args) {
-
-            try {
-
-                HashMap<String, String> params = new HashMap<>();
-                // params.put("name", args[0]);
-                // params.put("password", args[1]);
-
-                Log.d("request", "starting");
-
-                JSONObject json = jsonParser.makeHttpRequest(
-                        LOGIN_URL, "GET", params);
-
-                if (json != null) {
-                    Log.d("JSON result", json.toString());
-
-                    return json;
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(JSONObject json) {
-
-            int responseCode = 0;
-            JSONArray result = new JSONArray();
-
-            if (pDialog != null && pDialog.isShowing()) {
-                pDialog.dismiss();
-            }
-
-
-            if (json != null) {
-                Toast.makeText(getActivity(), getString(R.string.available_categories),
-                        Toast.LENGTH_LONG).show();
-
-                try {
-                    responseCode = json.getInt(RESPONSE_CODE);
-                    result = json.getJSONArray(RESULT);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (responseCode == 1) {
-                Log.d("Success! : ", String.format("Response Code = %d", responseCode));
-                try {
-                    // Set List
-                    setListOfCategories(result,null);
-                    shoppingCartAdapter = new ShoppingCartAdapter(categories,ShoppingCartFragment.this.getActivity(), R.layout.shopping_cart_list_item_layout );
-
-                    listView.setAdapter(shoppingCartAdapter);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }else{
-                Log.d("Failure! : ", String.format("Response Code = %d", responseCode));
-            }
-        }
-
     }
 }
