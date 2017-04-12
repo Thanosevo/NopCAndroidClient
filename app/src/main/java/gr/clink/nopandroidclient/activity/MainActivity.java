@@ -1,5 +1,6 @@
 package gr.clink.nopandroidclient.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import gr.clink.nopandroidclient.fragment.SettingsFragment;
 import gr.clink.nopandroidclient.fragment.ShoppingCartFragment;
 import gr.clink.nopandroidclient.model.UserInformation;
 import gr.clink.nopandroidclient.other.CircleTransform;
+import gr.clink.nopandroidclient.other.Globals;
 import gr.clink.nopandroidclient.other.TypefaceSpan;
 
 public class  MainActivity extends AppCompatActivity {
@@ -51,6 +54,7 @@ public class  MainActivity extends AppCompatActivity {
     private TextView txtName;
     private Toolbar toolbar;
     private FloatingActionButton fab;
+    private RelativeLayout back_dim_layout;
 
     // urls to load navigation header background image
     // and profile image
@@ -121,6 +125,35 @@ public class  MainActivity extends AppCompatActivity {
         resetUserVisuals();
     }
 
+    public void enableDimBackground(){
+        back_dim_layout.setVisibility(View.VISIBLE);
+    }
+
+    public void disableDimBackground(){
+        back_dim_layout.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        disableDimBackground();
+        if(resultCode == Activity.RESULT_OK){
+            String result = data.getExtras().getString(Globals.POPUPRESULT);
+            switch (result){
+                case Globals.PopupResponses.CONTINUESHOPPING:
+                    break;
+                case Globals.PopupResponses.GOTOCART:
+                    navItemIndex = 2;
+                    CURRENT_TAG = TAG_SHOPPINGCART;
+                    loadHomeFragment();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,7 +163,7 @@ public class  MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        back_dim_layout = (RelativeLayout) findViewById(R.id.bac_dim_layout);
         mHandler = new Handler();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -266,7 +299,7 @@ public class  MainActivity extends AppCompatActivity {
                     // categories fragment
                     return new CategoriesFragment();
                 case 2:
-                    // movies fragment
+                    // shopping cart fragment
                     return new ShoppingCartFragment();
                 case 3:
                     // notifications fragment

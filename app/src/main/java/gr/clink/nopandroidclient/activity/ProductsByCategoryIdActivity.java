@@ -123,12 +123,16 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
                 case Globals.PopupResponses.CONTINUESHOPPING:
                     break;
                 case Globals.PopupResponses.GOTOCART:
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(Globals.POPUPRESULT,Globals.PopupResponses.GOTOCART);
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
                     break;
                 default:
                     break;
             }
         }
-    }//onActivityResult
+    }
 
     class ListViewClickListener implements RadListView.ItemClickListener {
         @Override
@@ -153,7 +157,7 @@ public class ProductsByCategoryIdActivity extends AppCompatActivity {
     private void showProductDetail(Product product){
         Intent intent = new Intent(this, ProductDetailActivity.class);
         intent.putExtra(Globals.PRODUCT,product);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     class GetAsync extends AsyncTask<String, String, JSONObject> {

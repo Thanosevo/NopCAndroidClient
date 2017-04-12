@@ -4,6 +4,7 @@ package gr.clink.nopandroidclient.activity;
  * Created by Thanos on 1/18/2017.
  */
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -61,7 +62,22 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         disableDimBackground();
-    }//
+        if(resultCode == Activity.RESULT_OK){
+            String result = data.getExtras().getString(Globals.POPUPRESULT);
+            switch (result){
+                case Globals.PopupResponses.CONTINUESHOPPING:
+                    break;
+                case Globals.PopupResponses.GOTOCART:
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(Globals.POPUPRESULT,Globals.PopupResponses.GOTOCART);
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

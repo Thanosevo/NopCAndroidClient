@@ -271,7 +271,7 @@ public class CategoriesFragment extends FragmentBase {
 
         intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.ID,category.getId());
         intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.CATEGORY_NAME,category.getName());
-        startActivity(intent);
+        startActivityForResult(intent,1);
 
     }
 

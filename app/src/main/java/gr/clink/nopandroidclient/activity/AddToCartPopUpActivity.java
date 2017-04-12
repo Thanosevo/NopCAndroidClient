@@ -26,6 +26,7 @@ import gr.clink.nopandroidclient.other.Globals;
 
 public class AddToCartPopUpActivity extends AppCompatActivity {
     private Product product;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
