@@ -348,7 +348,7 @@ public class  MainActivity extends AppCompatActivity {
                 if( menuType == DrawerMenuType.Standard) {
                     switch (menuItem.getItemId()) {
                         //Replacing the main content with ContentFragment Which is our Inbox View;
-                        case R.id.home:
+                        case R.id.nav_home:
                             navItemIndex = 0;
                             CURRENT_TAG = TAG_HOME;
                             break;
@@ -384,7 +384,7 @@ public class  MainActivity extends AppCompatActivity {
                 }else{
                     switch (menuItem.getItemId()) {
                         //Replacing the main content with ContentFragment Which is our Inbox View;
-                        case R.id.home:
+                        case R.id.nav_home:
                             navItemIndex = 0;
                             CURRENT_TAG = TAG_PROFILE;
                             break;
