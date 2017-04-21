@@ -8,6 +8,7 @@ public class Category {
 
     private String parentCategoryName;
     private Integer id;
+    private Boolean _hasSubcategories;
     private String name;
     private String imageURL;
 
@@ -15,11 +16,20 @@ public class Category {
 
     }
 
-    public Category(String parentCategoryName, Integer id, String name, String imageURL) {
+    public Category(String parentCategoryName, Integer id, String name, String imageURL, Boolean hasSubcategories) {
         this.parentCategoryName = parentCategoryName;
         this.id = id;
         this.name = name;
         this.imageURL = imageURL;
+        this._hasSubcategories = hasSubcategories;
+    }
+
+    public Boolean hasSubcategories() {
+        return _hasSubcategories;
+    }
+
+    public void hasSubcategories(Boolean hasSubcategories) {
+        this._hasSubcategories = hasSubcategories;
     }
 
     public String getImageURL() {

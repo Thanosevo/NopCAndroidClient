@@ -78,6 +78,7 @@ public class  MainActivity extends AppCompatActivity {
 
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     private Handler mHandler;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -328,6 +329,7 @@ public class  MainActivity extends AppCompatActivity {
         s.setSpan(new TypefaceSpan(this, "RobotoSlab300.ttf"), 0, s.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(s);
+
     }
 
     private void selectNavMenu() {
@@ -417,8 +419,7 @@ public class  MainActivity extends AppCompatActivity {
 
 
 
-
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
 
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -432,6 +433,14 @@ public class  MainActivity extends AppCompatActivity {
                 super.onDrawerOpened(drawerView);
             }
         };
+        actionBarDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!actionBarDrawerToggle.isDrawerIndicatorEnabled() && navItemIndex == 1){
+                    ((CategoriesFragment)getSupportFragmentManager().findFragmentByTag(TAG_CATEGORIES)).popAdapter();
+                }
+            }
+        });
 
         //Setting the actionbarToggle to drawer layout
         drawer.setDrawerListener(actionBarDrawerToggle);
@@ -439,6 +448,20 @@ public class  MainActivity extends AppCompatActivity {
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
     }
+
+    public  void enableBackButton(){
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.backarrow);
+    }
+
+    public void enableBurgerButton(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -450,8 +473,12 @@ public class  MainActivity extends AppCompatActivity {
         // This code loads home fragment when back key is pressed
         // when user is in other fragment than home
         if (shouldLoadHomeFragOnBackPress) {
-            // checking if user is on other navigation menu
-            // rather than home
+
+            if(navItemIndex == 1 && !actionBarDrawerToggle.isDrawerIndicatorEnabled()){//categories
+                ((CategoriesFragment)getSupportFragmentManager().findFragmentByTag(TAG_CATEGORIES)).popAdapter();
+                return;
+            }
+
             if (navItemIndex != 0) {
                 navItemIndex = 0;
                 CURRENT_TAG = TAG_HOME;
@@ -470,13 +497,16 @@ public class  MainActivity extends AppCompatActivity {
         // show menu only when home fragment is selected
         if (navItemIndex == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
+            return true;
         }
 
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
+        else if (navItemIndex == 3) {
             getMenuInflater().inflate(R.menu.notifications, menu);
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     @Override

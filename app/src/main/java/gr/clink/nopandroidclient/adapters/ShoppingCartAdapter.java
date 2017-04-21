@@ -17,6 +17,7 @@ import java.util.List;
 
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.model.CartProduct;
+import gr.clink.nopandroidclient.model.UserInformation;
 
 
 public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
@@ -40,10 +41,9 @@ public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
     public void onBindItemViewHolder(ListViewHolder holder, Object entity) {
         ShoppingCartItemViewHolder typedViewHolder = (ShoppingCartItemViewHolder) holder;
         long itemId = getItemId(entity);
-        if (deletedItemId == itemId) {
-            //TODO: REMOVE ITEM
+        if (deletedItemId != itemId) {
+            typedViewHolder.bind((CartProduct) entity);
         }
-        typedViewHolder.bind((CartProduct) entity);
     }
 
     @Override
@@ -66,6 +66,9 @@ public class ShoppingCartAdapter extends ListViewDataSourceAdapter {
             public void onClick(View v) {
                 CartProduct CartProductToDelete = getSwipedCartProduct();
                 deletedItemId = getItemId(CartProductToDelete);
+                remove(CartProductToDelete);
+                UserInformation.getInstance().removeCartProduct(CartProductToDelete.getProduct().getProductId());
+                //TODO: change view if no items remain
                 notifyItemChanged(listViewCurrentSwipeIndex);
                 notifySwipeExecuteFinished();
             }

@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     tools:context="gr.clink.nopandroidclient.fragment.HomeFragment">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:alpha="0.3"
-        android:src="@drawable/ic_home_black_24dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_button"
+        android:text="SEARCH keyword mapbook"/>
 
 </FrameLayout>

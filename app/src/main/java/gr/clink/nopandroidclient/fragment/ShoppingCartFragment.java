@@ -14,7 +14,7 @@ import com.telerik.widget.list.SwipeExecuteBehavior;
 import customfonts.MyTextView;
 import gr.clink.nopandroidclient.R;
 import gr.clink.nopandroidclient.adapters.ShoppingCartAdapter;
-import gr.clink.nopandroidclient.model.CartProduct;
+import gr.clink.nopandroidclient.model.UserInformation;
 
 public class ShoppingCartFragment extends FragmentBase {
     private RadListView listView;
@@ -25,9 +25,9 @@ public class ShoppingCartFragment extends FragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if(UserInformation.getInstance().hasEmptyCart()){
-//            return inflater.inflate(R.layout.fragment_shopping_cart_empty, container, false);
-//        }
+        if(UserInformation.getInstance().hasEmptyCart()){
+            return inflater.inflate(R.layout.fragment_shopping_cart_empty, container, false);
+        }
         View rootView = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
         listView = (RadListView) rootView.findViewById(R.id.listView);
         checkout = (MyTextView) rootView.findViewById(R.id.checkout);
@@ -39,7 +39,7 @@ public class ShoppingCartFragment extends FragmentBase {
         });
 
 
-        shoppingCartAdapter = new ShoppingCartAdapter(CartProduct.RandomCollectionOfCartProducts() /*UserInformation.getInstance().getCartProducts()*/,ShoppingCartFragment.this.getActivity(), R.layout.shopping_cart_list_item_layout );
+        shoppingCartAdapter = new ShoppingCartAdapter(UserInformation.getInstance().getCartProducts(),ShoppingCartFragment.this.getActivity(), R.layout.shopping_cart_list_item_layout );
         listView.setAdapter(shoppingCartAdapter);
 
         GridLayoutManager gridLayout = new GridLayoutManager(getActivity(), 1);

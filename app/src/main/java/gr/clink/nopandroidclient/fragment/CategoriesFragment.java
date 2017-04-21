@@ -1,8 +1,6 @@
 package gr.clink.nopandroidclient.fragment;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,11 +10,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.telerik.android.common.Function;
-import com.telerik.widget.list.ListViewDataSourceAdapter;
 import com.telerik.widget.list.RadListView;
 import com.telerik.widget.list.StickyHeaderBehavior;
 
@@ -24,16 +19,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import gr.clink.nopandroidclient.R;
-import gr.clink.nopandroidclient.activity.ProductsByCategoryIdActivity;
-import gr.clink.nopandroidclient.model.Category;
+import gr.clink.nopandroidclient.activity.MainActivity;
+import gr.clink.nopandroidclient.activity.GetProductsActivity;
 import gr.clink.nopandroidclient.adapters.CategoryAdapter;
+import gr.clink.nopandroidclient.model.Category;
 import gr.clink.nopandroidclient.other.Globals;
 import gr.clink.nopandroidclient.other.JSONParser;
 
@@ -41,9 +39,11 @@ import gr.clink.nopandroidclient.other.JSONParser;
 public class CategoriesFragment extends FragmentBase {
 
     private List<Category> categories = new ArrayList<>();
+    StickyHeaderBehavior stickyHeaderBehavior = new StickyHeaderBehavior();
     RadListView listView;
     private ArrayList<String> availableFilters = new ArrayList<>();
     CategoryAdapter categoryAdapter;
+    private Deque<CategoryAdapter> adapterStack = new ArrayDeque<>();
 
     public CategoriesFragment() {
     }
@@ -79,25 +79,18 @@ public class CategoriesFragment extends FragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        new GetAsync().execute();
-
+            new GetAsync().execute();
         View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
         listView = (RadListView) rootView.findViewById(R.id.listView);
 
         GridLayoutManager gridLayout = new GridLayoutManager(getActivity(), 2);
         listView.setLayoutManager(gridLayout);
-
-        StickyHeaderBehavior stickyHeaderBehavior = new StickyHeaderBehavior();
         listView.addBehavior(stickyHeaderBehavior);
 
         listView.addItemClickListener(new ListViewClickListener());
 
 
-
-
-
-
-        ImageButton btnShowSettings = (ImageButton) rootView.findViewById(R.id.btnShowSettings);
+        /*ImageButton btnShowSettings = (ImageButton) rootView.findViewById(R.id.btnShowSettings);
         btnShowSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +151,7 @@ public class CategoriesFragment extends FragmentBase {
                 dialogBuilder.create().show();
 
             }
-        });
+        });*/
         return rootView;
     }
 
@@ -180,81 +173,34 @@ public class CategoriesFragment extends FragmentBase {
             // Add filters
             availableFilters.add(name);
             if (subCategories.length() != 0){
+                categories.add(new Category(parentName,id,name,imURL,true));
                 setListOfCategories(subCategories,name);
             }else{
-                if(parentName == null)
-                    categories.add(new Category(name,id,name,imURL));
-                else
-                    categories.add(new Category(parentName,id,name,imURL));
+                categories.add(new Category(parentName,id,name,imURL,false));
             }
         }
     }
 
+    private List<Category> getCategoriesWithParent(String parentName){
+        List<Category> result = new ArrayList<>();
+        if (categories!=null)
+            for(Category c : categories)
+                if(c.getParentCategoryName().equals(parentName))
+                    result.add(c);
+        return result;
+    }
 
     @Override
     protected boolean usesInternet() {return true;}
 
 
-
-//    class BlogPostViewCallback implements ActionMode.Callback {
-//        int itemPosition;
-//
-//        BlogPostViewCallback(int position) {
-//            this.itemPosition = position;
-//        }
-//
-//        @Override
-//        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-//            System.out.println("blogpostviewCallback oncreateActionmode");
-//            MenuInflater inflater = mode.getMenuInflater();
-//            inflater.inflate(R.menu.list_view_selection_menu, menu);
-//            ExampleActivity ea = (ExampleActivity) getActivity();
-//            ea.toggleExampleInfoMenuStripVisibility(false);
-//
-//            return true;
-//        }
-//
-//        @Override
-//        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-//            System.out.println("blogpostviewCallback oncreateActionmode");
-//            mode.setCustomView(actionModeTitleView);
-//
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//            System.out.println("blogpostviewCallback onActionItemClicked");
-//            BlogPost currentPost = (BlogPost) adapter.getItem(itemPosition);
-//            if (item.getItemId() == R.id.list_view_selection_example_delete_action) {
-//                adapter.remove(currentPost);
-//            } else if (item.getItemId() == R.id.list_view_selection_example_fav_action) {
-//                toggleItemFavourite(currentPost);
-//                adapter.notifyItemChanged(itemPosition);
-//            }
-//            mode.finish();
-//            return true;
-//        }
-//
-//        @Override
-//        public void onDestroyActionMode(ActionMode mode) {
-//            System.out.println("blogpostviewCallback onDestroyActionMode");
-//            showBlogPostView(false);
-//            adapter.setCurrentItemId(INVALID_ID);
-//            ExampleActivity ea = (ExampleActivity) getActivity();
-//            ea.toggleExampleInfoMenuStripVisibility(true);
-//        }
-//    }
-
     class ListViewClickListener implements RadListView.ItemClickListener {
         @Override
         public void onItemClick(int itemPosition, MotionEvent motionEvent) {
             if( categoryAdapter != null ){
-                try {
+                if(categoryAdapter.getItem(itemPosition) instanceof Category ) {
                     Category tappedCategory = (Category) categoryAdapter.getItem(itemPosition);
-                    showProductListViewForCategory(tappedCategory);
-                }catch (ClassCastException e){
-
+                    showChildrenOfCategory(tappedCategory);
                 }
             }
         }
@@ -266,13 +212,49 @@ public class CategoriesFragment extends FragmentBase {
     }
 
 
-    private void showProductListViewForCategory(Category category){
-        Intent intent = new Intent(getActivity(), ProductsByCategoryIdActivity.class);
+    private void showChildrenOfCategory(Category category){
+        if(!category.hasSubcategories()) {
+            Intent intent = new Intent(getActivity(), GetProductsActivity.class);
+            intent.putExtra(Globals.GET_PRODUCTS_ACTIVITY_TYPE, Globals.ProductsActivityType.GET_PRODUCTS_BY_CATEGORY);
+            intent.putExtra(Globals.ProductsByCategoryIdActivityProperties.ID, category.getId());
+            intent.putExtra(Globals.ProductsByCategoryIdActivityProperties.CATEGORY_NAME, category.getName());
+            startActivityForResult(intent, Globals.REQUEST_CODE_ADD_TO_CART);
+        }else{
+            if(category.getParentCategoryName().equals("")){
+                ((MainActivity) getActivity()).enableBackButton();
+            }
 
-        intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.ID,category.getId());
-        intent.putExtra(Globals.ProductsByCatagoryIdActivityProperties.CATEGORY_NAME,category.getName());
-        startActivityForResult(intent,1);
 
+            List<Category> subCategories = getCategoriesWithParent(category.getName());
+            adapterStack.push(categoryAdapter);
+            categoryAdapter = new CategoryAdapter(subCategories, CategoriesFragment.this.getActivity(), R.layout.category_list_item_layout );
+            listView.removeBehavior(stickyHeaderBehavior);
+            categoryAdapter.addGroupDescriptor(new Function<Object, Object>() {
+                @Override
+                public Object apply(Object argument) {
+                    Category container = (Category) argument;
+                    return container.getParentCategoryName();
+                }
+            });
+            stickyHeaderBehavior = new StickyHeaderBehavior();
+            listView.setAdapter(categoryAdapter);
+            listView.addBehavior(stickyHeaderBehavior);
+        }
+
+    }
+
+    public void popAdapter(){
+        if(!adapterStack.isEmpty()) {
+            categoryAdapter = adapterStack.pop();
+            listView.removeBehavior(stickyHeaderBehavior);
+            stickyHeaderBehavior = new StickyHeaderBehavior();
+            listView.setAdapter(categoryAdapter);
+            listView.addBehavior(stickyHeaderBehavior);
+
+            if(adapterStack.isEmpty()){
+                ((MainActivity) getActivity()).enableBurgerButton();
+            }
+        }
     }
 
 
@@ -337,9 +319,6 @@ public class CategoriesFragment extends FragmentBase {
 
 
             if (json != null) {
-                Toast.makeText(getActivity(), getString(R.string.available_categories),
-                        Toast.LENGTH_LONG).show();
-
                 try {
                     responseCode = json.getInt(RESPONSE_CODE);
                     result = json.getJSONArray(RESULT);
@@ -353,14 +332,14 @@ public class CategoriesFragment extends FragmentBase {
                 Log.d("Success! : ", String.format("Response Code = %d", responseCode));
                 try {
                     // Set List
-                    setListOfCategories(result,null);
-                    categoryAdapter = new CategoryAdapter(categories, CategoriesFragment.this.getActivity(), R.layout.category_list_item_layout );
+                    setListOfCategories(result,"");
+                    List<Category> shownCategories = getCategoriesWithParent("");
+                    categoryAdapter = new CategoryAdapter(shownCategories, CategoriesFragment.this.getActivity(), R.layout.category_list_item_layout );
 
                     categoryAdapter.addGroupDescriptor(new Function<Object, Object>() {
                         @Override
                         public Object apply(Object argument) {
-                            Category container = (Category) argument;
-                            return container.getParentCategoryName();
+                            return "Main Categories";
                         }
                     });
                     listView.setAdapter(categoryAdapter);

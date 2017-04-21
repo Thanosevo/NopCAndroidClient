@@ -34,7 +34,7 @@
             android:name=".activity.PrivacyPolicyActivity"
             android:label="@string/activity_title_privacy_policy" />
         <activity
-            android:name=".activity.ProductsByCategoryIdActivity"
+            android:name=".activity.GetProductsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.ProductDetailActivity"
@@ -44,6 +44,9 @@
             android:label="@string/title_activity_login_register"/>
         <activity
             android:name=".activity.AddToCartPopUpActivity"
+            android:theme="@style/AppTheme.CustomPopPup"/>
+        <activity
+            android:name=".activity.FilterTableActivity"
             android:theme="@style/AppTheme.CustomPopPup"/>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for

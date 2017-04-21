@@ -41,7 +41,8 @@ class CategoryItemViewHolder extends ListViewHolder {
         this.entity = entity;
 
         this.title.setText(entity.getName());
-        this.subtitle.setText(prefix +" "+entity.getParentCategoryName());
+        if (!entity.getParentCategoryName().equals(""))
+            this.subtitle.setText(prefix +" "+entity.getParentCategoryName());
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(entity.getImageURL()))
 

@@ -13,7 +13,7 @@ import com.telerik.widget.list.ListViewHolder;
 import java.util.List;
 
 import gr.clink.nopandroidclient.activity.AddToCartPopUpActivity;
-import gr.clink.nopandroidclient.activity.ProductsByCategoryIdActivity;
+import gr.clink.nopandroidclient.activity.GetProductsActivity;
 import gr.clink.nopandroidclient.model.CartProduct;
 import gr.clink.nopandroidclient.model.Product;
 import gr.clink.nopandroidclient.model.UserInformation;
@@ -46,12 +46,12 @@ public class ProductAdapter extends ListViewDataSourceAdapter {
             @Override
             public void onClick(View view) {
                 try{
-                    ProductsByCategoryIdActivity activity = (ProductsByCategoryIdActivity)context;
+                    GetProductsActivity activity = (GetProductsActivity)context;
                     activity.enableDimBackground();
                     UserInformation.getInstance().addCartProduct(new CartProduct(p,1));
                     Intent i = new Intent(context, AddToCartPopUpActivity.class);
                     i.putExtra(Globals.PRODUCT,p);
-                    activity.startActivityForResult(i,1);
+                    activity.startActivityForResult(i,Globals.REQUEST_CODE_ADD_TO_CART);
                 }catch (Exception e){
                     Toast.makeText(context,"failed to add item to cart",Toast.LENGTH_SHORT).show();
                 }

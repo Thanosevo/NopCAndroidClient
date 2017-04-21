@@ -89,7 +89,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
         product = getIntent().getExtras().getParcelable(Globals.PRODUCT);
         // Set Category TextView
         productCategoryTextView  = (TextView)findViewById(R.id.productCategory);
-        productCategoryTextView.setText(product.getCategoryName());
+        productCategoryTextView.setText(product.getCategoriesToString());
         // Set Product Name TextView
         productNameTextView = (TextView)findViewById(R.id.itemname);
         productNameTextView.setText(product.getProductName());
@@ -114,7 +114,7 @@ public class ProductDetailActivity extends AppCompatActivity implements BaseSlid
                 Intent i = new Intent(ProductDetailActivity.this, AddToCartPopUpActivity.class);
                 i.putExtra(Globals.PRODUCT,product);
                 enableDimBackground();
-                startActivityForResult(i,1);
+                startActivityForResult(i,Globals.REQUEST_CODE_ADD_TO_CART);
             }
         });
 

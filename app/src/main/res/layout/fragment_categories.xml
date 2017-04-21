@@ -28,5 +28,7 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="32dp"
         android:background="@color/transparent"
-        android:src="@drawable/listview_layouts_fab" />
+        android:src="@drawable/listview_layouts_fab"
+        android:visibility="gone"
+        />
 </FrameLayout>

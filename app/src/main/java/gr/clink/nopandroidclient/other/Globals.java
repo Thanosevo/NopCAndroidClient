@@ -17,13 +17,23 @@ public class Globals {
     public final static String GET_CATEGORIES = "/Plugins/RestApi/GetCategories";
     public final static String GET_PRODUCTS = "/Plugins/RestApi/GetProductsOfCategory";
     public final static String PARAM_CATEGORY_ID = "categoryId";
+    public final static String GET_PRODUCTS_SEARCH = "/Plugins/RestApi/Search";
+    public final static String PARAM_SEARCH_TERM = "searchTerms";
     public final static String POST_CUSTOMER_LOGIN = "/Plugins/RestApi/checkCustomerLogin";
     //endregion
 
     //region activity-intents
-    public static class ProductsByCatagoryIdActivityProperties{
+    public static String GET_PRODUCTS_ACTIVITY_TYPE = "activityType";
+    public static class ProductsActivityType {
+        public static Integer GET_PRODUCTS_BY_CATEGORY = 1;
+        public static Integer GET_PRODUCTS_BY_SEARCH = 2;
+    }
+    public static class ProductsByCategoryIdActivityProperties {
         public static String ID = "categoryID";
         public static String CATEGORY_NAME = "categoryName";
+    }
+    public static class ProductsBySearchActivityProperties{
+        public static String SEARCH_TERM = "searchTerms";
     }
     public final static String PRODUCT = "ParcelableProduct";
 
@@ -33,7 +43,13 @@ public class Globals {
         public final  static String CONTINUESHOPPING = "continueShopping";
     }
 
+    public static String FILTERS = "FilterOptions";
     //endregion
+
+    //region REQUESTCODES
+    public final static Integer REQUEST_CODE_ADD_TO_CART = 1;
+    public final static Integer REQUEST_CODE_FILTER_OPTIONS = 2;
+    //endRegion
 
     public static Drawable createInfoBackground(Boolean upDown) {
         ShapeDrawable.ShaderFactory shaderFactory;

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NopAndroidClient.iml" filepath="$PROJECT_DIR$/NopAndroidClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/NopCAndroidClient.iml" filepath="$PROJECT_DIR$/NopCAndroidClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
